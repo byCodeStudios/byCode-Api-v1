@@ -57,7 +57,7 @@ app.get('/api/status', async (req, res) => {
         await updateStatus();
 
         // Actualizar el estado cada 5 segundos
-        setInterval(updateStatus, 5000);
+        setInterval(updateStatus, 1000);
 
     } catch (err) {
         console.error('Error al procesar la solicitud:', err);
