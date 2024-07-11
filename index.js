@@ -56,13 +56,33 @@ app.get('/api/status', async (req, res) => {
         // Llamar a la función de actualización de estado inicialmente
         await updateStatus();
 
-        // Actualizar el estado cada 5 segundos
-        setInterval(updateStatus, 1000);
-
     } catch (err) {
         console.error('Error al procesar la solicitud:', err);
         res.status(500).json({ status: 'Error', message: err.message });
     }
+});
+
+// Actualizar el estado cada 5 segundos (fuera de la ruta)
+const updateInterval = setInterval(async () => {
+    try {
+        const data = await fs.readFile(join(__dirname, 'services.json'), 'utf8');
+        const services = JSON.parse(data);
+
+        const results = await Promise.all(services.map(checkStatus));
+        console.log('Actualizando estado...');
+        console.log(results);
+
+    } catch (err) {
+        console.error('Error al actualizar estado:', err);
+    }
+}, 5000);
+
+// Manejo de errores no capturados
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    // Detener el intervalo si hay un error no capturado
+    clearInterval(updateInterval);
+    process.exit(1);
 });
 
 // Iniciar el servidor
@@ -70,4 +90,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
-    
