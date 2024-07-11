@@ -2,7 +2,7 @@ import express from 'express';
 import { promises as fs } from 'fs';
 import axios from 'axios';
 import { fileURLToPath } from 'url';
-import path, { dirname } from 'path'; // Importar 'path' correctamente
+import { dirname, join } from 'path'; // Utilizamos join de 'path'
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -16,7 +16,7 @@ app.get('/', (req, res) => {
 // Ruta /api/status
 app.get('/api/status', async (req, res) => {
     try {
-        const data = await fs.readFile(path.join(__dirname, 'services.json'), 'utf8'); // Usar 'path.join' correctamente
+        const data = await fs.readFile(join(__dirname, 'services.json'), 'utf8'); // Usamos 'join' de 'path' aquí
         const services = JSON.parse(data);
 
         const checkStatus = async (service) => {
@@ -60,4 +60,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
-            
