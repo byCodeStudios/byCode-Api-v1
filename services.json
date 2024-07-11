@@ -6,5 +6,9 @@
     {
         "name": "Database",
         "ip": "127.0.0.1"
+    },
+    {
+        "name": "yt",
+        "ip": "YouTube.com"
     }
 ]
