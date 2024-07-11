@@ -1,5 +1,4 @@
 import express from 'express';
-import path from 'path';
 import { promises as fs } from 'fs';
 import axios from 'axios';
 import { fileURLToPath } from 'url';
@@ -9,15 +8,10 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Servir archivos estáticos
-app.use(express.static(path.join(__dirname, 'src')));
-
-// Ruta principal
+// Ruta / redirecciona a /api/status
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'src', 'index.html'));
+    res.redirect('/api/status');
 });
-
-// Ruta /status
 
 // Ruta /api/status
 app.get('/api/status', async (req, res) => {
@@ -44,12 +38,17 @@ app.get('/api/status', async (req, res) => {
             }
         };
 
-        const results = await Promise.all(services.map(checkStatus));
+        const updateStatus = async () => {
+            const results = await Promise.all(services.map(checkStatus));
+            res.json({
+                status: 'OK',
+                services: results
+            });
+        };
 
-        res.json({
-            status: 'OK',
-            services: results
-        });
+        // Actualizar el estado cada 5 segundos
+        setInterval(updateStatus, 5000);
+
     } catch (err) {
         console.error('Error al procesar la solicitud:', err);
         res.status(500).json({ status: 'Error', message: err.message });
