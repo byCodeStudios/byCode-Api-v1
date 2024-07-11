@@ -1,0 +1,10 @@
+[
+    {
+        "name": "Website",
+        "ip": "google.com"
+    },
+    {
+        "name": "Database",
+        "ip": "127.0.0.1"
+    }
+]
